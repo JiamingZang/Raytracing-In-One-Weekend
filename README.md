@@ -1,4 +1,4 @@
-# Raytracing In One Weekend
+# Ray Tracing In One Weekend
 
 A rust version of Ray Tracing In One Weekend from
 
