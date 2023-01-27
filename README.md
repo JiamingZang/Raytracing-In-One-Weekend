@@ -1,8 +1,10 @@
 # Raytracing In One Weekend
 
-a rust version
+A rust version of Ray Tracing In One Weekend from
 
-not finished yet
+https://raytracing.github.io/
+
+Not finished yet
 
 ```
 $ cargo run --release > image.ppm
