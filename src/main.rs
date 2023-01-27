@@ -31,10 +31,6 @@ use crate::material::{Lambertian, Metal};
 //     }
 // }
 
-// fn hit_heart(center: &Point3, r: &Ray) -> bool {
-
-// }
-
 fn ray_color(r: &Ray, world: &dyn Hittable, depth: i32) -> Color {
     let mut rec = HitRecord::default();
 
