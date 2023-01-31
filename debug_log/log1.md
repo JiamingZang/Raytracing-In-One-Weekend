@@ -4,7 +4,7 @@
 
 首先对之前做的事情先做一个简要的介绍吧，我们在场景中渲染了几个球，为它们添加了漫反射材质和金属材质，到目前为止一切顺利，效果如下图。
 
-![效果图1](debug_log/assets/image.png)
+![效果图1](https://raw.githubusercontent.com/JiamingZang/Raytracing-In-One-Weekend/main/debug_log/assets/image.png)
 
 这些都是利用光线追踪实现的，上面的图片的宽度是 400，长宽比为 16:9，也就是说，这张图是由 400\*225 个像素点组成的，要得到这张图片，只需要知道每一个像素点对应的颜色即可。
 
