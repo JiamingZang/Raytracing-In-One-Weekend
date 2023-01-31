@@ -1,4 +1,7 @@
-use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub};
+use std::{
+    cmp::min,
+    ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub},
+};
 
 use crate::rtweekend::*;
 
@@ -220,4 +223,18 @@ pub fn random_in_hemisphere(normal: &Vec3) -> Vec3 {
 
 pub fn reflect(v: Vec3, n: Vec3) -> Vec3 {
     v - n * dot(&v, &n) * 2.0
+}
+
+pub fn refract(uv: Vec3, n: Vec3, etai_over_etat: f64) -> Vec3 {
+    let cos_theta = fmin(dot(&uv, &-n), 1.0);
+    let r_out_perp = (uv + n * cos_theta) * etai_over_etat;
+    let r_out_parallel = -n * (1.0 - r_out_perp.length_squared()).sqrt();
+    r_out_perp + r_out_parallel
+}
+fn fmin(a: f64, b: f64) -> f64 {
+    if a > b {
+        b
+    } else {
+        a
+    }
 }

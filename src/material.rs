@@ -1,7 +1,7 @@
 use crate::{
     hittable::HitRecord,
     ray::Ray,
-    vec3::{dot, random_in_unit_sphere, random_unit_vector, reflect, Color},
+    vec3::{dot, random_in_unit_sphere, random_unit_vector, reflect, refract, Color, Point3, Vec3},
 };
 
 pub trait Material {
@@ -77,5 +77,58 @@ impl Material for Metal {
         *scattered = Ray::ray(rec.p, reflected + random_in_unit_sphere() * self.fuzz);
         *attenuation = self.albedo;
         dot(scattered.direction(), &rec.normal) > 0.0
+    }
+}
+
+pub struct Dielectric {
+    pub ir: f64,
+}
+
+impl Dielectric {
+    pub fn new(index_of_refraction: f64) -> Dielectric {
+        Dielectric {
+            ir: index_of_refraction,
+        }
+    }
+}
+
+impl Material for Dielectric {
+    fn scatter(
+        &self,
+        r_in: &Ray,
+        rec: &HitRecord,
+        attenuation: &mut Color,
+        scattered: &mut Ray,
+    ) -> bool {
+        let refraction_ratio = if rec.front_face {
+            1.0 / self.ir
+        } else {
+            self.ir
+        };
+
+        let unit_direction = r_in.direction().unit_vector();
+
+        let cos_theta = if dot(&-unit_direction, &rec.normal) > 1.0 {
+            1.0
+        } else {
+            dot(&-unit_direction, &rec.normal)
+        };
+        let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
+
+        let cannot_reflect = refraction_ratio * sin_theta > 1.0;
+
+        let direction;
+        if cannot_reflect {
+            direction = reflect(unit_direction, rec.normal);
+        } else {
+            direction = refract(unit_direction, rec.normal, refraction_ratio);
+        }
+
+        *attenuation = Color::new(1.0, 1.0, 1.0);
+        if rec.front_face {
+        } else {
+        }
+        *scattered = Ray::ray(rec.p, direction);
+        true
     }
 }

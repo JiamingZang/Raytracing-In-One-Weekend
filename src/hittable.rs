@@ -21,7 +21,7 @@ impl Default for HitRecord {
             p: Point3::default(),
             normal: Vec3::default(),
             t: 0.0,
-            front_face: false,
+            front_face: true,
             mat_ptr: Rc::new(Lambertian::new(Color::default())),
         }
     }

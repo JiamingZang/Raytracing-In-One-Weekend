@@ -16,20 +16,7 @@ use rtweekend::*;
 use sphere::*;
 use vec3::*;
 
-use crate::material::{Lambertian, Metal};
-
-// fn hit_sphere(center: &Point3, radius: f64, r: &Ray) -> f64 {
-//     let oc = r.origin().clone() - *center;
-//     let a = r.direction().length_squared();
-//     let half_b = dot(&oc, r.direction());
-//     let c = oc.length_squared() - radius * radius;
-//     let discriminant = half_b * half_b - a * c;
-//     if discriminant < 0.0 {
-//         -1.0
-//     } else {
-//         (-half_b - discriminant.sqrt()) / a
-//     }
-// }
+use crate::material::{Dielectric, Lambertian, Metal};
 
 fn ray_color(r: &Ray, world: &dyn Hittable, depth: i32) -> Color {
     let mut rec = HitRecord::default();
@@ -64,9 +51,9 @@ fn main() {
     // World
     let mut world = HittableList::default();
     let material_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
-    let material_center = Rc::new(Lambertian::new(Color::new(0.7, 0.3, 0.3)));
-    let material_left = Rc::new(Metal::new(Color::new(0.8, 0.8, 0.8), 0.1));
-    let material_right = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 1.0));
+    let material_center = Rc::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
+    let material_left = Rc::new(Dielectric::new(1.5));
+    let material_right = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.0));
     world.add(Rc::new(Sphere::new(
         Point3::default().set_z(-1.0),
         0.5,
