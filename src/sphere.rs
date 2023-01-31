@@ -31,26 +31,23 @@ impl Hittable for Sphere {
 
         let discriminant = half_b * half_b - a * c;
         if discriminant < 0.0 {
-            false
-        } else {
-            let sqrtd = discriminant.sqrt();
-
-            // Find the nearest root that lies in the acceptable range.
-            let root = (-half_b - sqrtd) / a;
-            if root < t_min || root > t_max {
-                let root = (-half_b + sqrtd) / a;
-                if root < t_min || t_max < root {
-                    return false;
-                } else {
-                };
-            } else {
-            };
-            rec.t = root;
-            rec.p = r.at(rec.t);
-            let outward_normal = (rec.p - self.center) / self.radius;
-            rec.set_face_normal(r, &outward_normal);
-            rec.mat_ptr = self.mat_ptr.clone();
-            true
+            return false;
         }
+        let sqrtd = discriminant.sqrt();
+
+        // Find the nearest root that lies in the acceptable range.
+        let mut root = (-half_b - sqrtd) / a;
+        if root < t_min || root > t_max {
+            root = (-half_b + sqrtd) / a; //no let
+            if root < t_min || t_max < root {
+                return false;
+            }
+        }
+        rec.t = root;
+        rec.p = r.at(rec.t);
+        let outward_normal = (rec.p - self.center) / self.radius;
+        rec.set_face_normal(r, &outward_normal);
+        rec.mat_ptr = self.mat_ptr.clone();
+        true
     }
 }
