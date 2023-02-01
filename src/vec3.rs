@@ -1,7 +1,4 @@
-use std::{
-    cmp::min,
-    ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub},
-};
+use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub};
 
 use crate::rtweekend::*;
 
