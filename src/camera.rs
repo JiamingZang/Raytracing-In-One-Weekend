@@ -31,10 +31,40 @@ impl Default for Camera {
 }
 
 impl Camera {
-    pub fn get_ray(&self, u: f64, v: f64) -> Ray {
+    pub fn new(
+        lookfrom: Point3,
+        lookat: Point3,
+        vup: Vec3,
+        vfov: f64,
+        aspect_ratio: f64,
+    ) -> Camera {
+        let theta = degrees_to_radians(vfov);
+        let h = (theta / 2.0).tan();
+        let viewport_height = 2.0 * h;
+        let viewport_width = aspect_ratio * viewport_height;
+
+        let w = (lookfrom - lookat).unit_vector();
+        let u = cross(&vup, &w).unit_vector();
+        let v = cross(&w, &u);
+
+        // let focal_length = 1.0;
+
+        let origin = lookfrom;
+        let horizontal = u * viewport_width;
+        let vertical = v * viewport_height;
+        let lower_left_corner = origin - horizontal / 2.0 - vertical / 2.0 - w;
+        Camera {
+            origin,
+            lower_left_corner,
+            horizontal,
+            vertical,
+        }
+    }
+
+    pub fn get_ray(&self, s: f64, t: f64) -> Ray {
         Ray::ray(
             self.origin,
-            self.lower_left_corner + self.horizontal * u + self.vertical * v - self.origin,
+            self.lower_left_corner + self.horizontal * s + self.vertical * t - self.origin,
         )
     }
 }

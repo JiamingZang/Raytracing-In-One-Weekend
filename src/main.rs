@@ -49,6 +49,7 @@ fn main() {
     let max_depth = 50;
 
     // World
+
     let mut world = HittableList::default();
     let material_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
     let material_center = Rc::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
@@ -71,7 +72,7 @@ fn main() {
     )));
     world.add(Rc::new(Sphere::new(
         Point3::new(-1.0, 0.0, -1.0),
-        -0.4,
+        -0.45,
         material_left,
     )));
     world.add(Rc::new(Sphere::new(
@@ -81,7 +82,13 @@ fn main() {
     )));
 
     // Camera
-    let cam = Camera::default();
+    let cam = Camera::new(
+        Point3::new(-2.0, 2.0, 1.0),
+        Point3::default().set_z(-1.0),
+        Vec3::default().set_y(1.0),
+        20.0,
+        aspect_ratio,
+    );
     //Render
     println!("P3\n{} {}\n255\n", image_width, image_height);
     for j in 0..(image_height - 1) {
