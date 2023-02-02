@@ -11,3 +11,5 @@ $ cargo run --release > image.ppm
 1.26-2.2
 
 Ray Tracing In One Week~~end~~ finished√
+
+![final scene](image.jpg)
