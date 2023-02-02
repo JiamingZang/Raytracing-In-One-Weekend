@@ -1,9 +1,9 @@
-use std::{mem, rc::Rc};
+use std::{mem, sync::Arc};
 
 use crate::hittable::*;
 
 pub struct HittableList {
-    pub objects: Vec<Rc<dyn Hittable>>,
+    pub objects: Vec<Arc<dyn Hittable + Sync + Send>>,
 }
 
 impl Default for HittableList {
@@ -15,13 +15,13 @@ impl Default for HittableList {
 }
 
 impl HittableList {
-    pub fn new(object: Rc<dyn Hittable>) -> HittableList {
+    pub fn new(object: Arc<dyn Hittable + Sync + Send>) -> HittableList {
         let mut list = HittableList::default();
         list.add(object);
         list
     }
 
-    pub fn add(&mut self, object: Rc<dyn Hittable>) {
+    pub fn add(&mut self, object: Arc<dyn Hittable + Sync + Send>) {
         self.objects.push(object.into());
     }
 
