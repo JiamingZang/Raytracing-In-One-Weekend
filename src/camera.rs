@@ -1,3 +1,5 @@
+use std::mem;
+
 use crate::ray::Ray;
 use crate::rtweekend::*;
 use crate::vec3::*;
@@ -11,6 +13,8 @@ pub struct Camera {
     pub v: Vec3,
     pub w: Vec3,
     pub lens_radius: f64,
+    pub time0: f64,
+    pub time1: f64,
 }
 
 // impl Default for Camera {
@@ -69,15 +73,32 @@ impl Camera {
             v,
             w,
             lens_radius,
+            time0: 0.0,
+            time1: 0.0,
         }
     }
 
+    pub fn set_time(&self, time0: f64, time1: f64) -> Self {
+        Camera {
+            origin: self.origin,
+            lower_left_corner: self.lower_left_corner,
+            horizontal: self.horizontal,
+            vertical: self.vertical,
+            u: self.u,
+            v: self.v,
+            w: self.w,
+            lens_radius: self.lens_radius,
+            time0: time0,
+            time1: time1,
+        }
+    }
     pub fn get_ray(&self, s: f64, t: f64) -> Ray {
         let rd = random_in_unit_disk() * self.lens_radius;
         let offset = self.u * rd.x + self.v * rd.y;
         Ray::ray(
             self.origin + offset,
             self.lower_left_corner + self.horizontal * s + self.vertical * t - self.origin - offset,
+            rand_double(self.time0, self.time1),
         )
     }
 }

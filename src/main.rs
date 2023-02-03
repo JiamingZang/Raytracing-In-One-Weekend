@@ -7,10 +7,12 @@ mod sphere;
 mod vec3;
 use std::sync::Arc;
 mod material;
+mod moving_sphere;
 
 use camera::*;
 use hittable::*;
 use hittable_list::*;
+use moving_sphere::MovingSphere;
 use ray::*;
 use rayon::prelude::{IntoParallelIterator, ParallelIterator};
 use rtweekend::*;
@@ -27,7 +29,7 @@ fn ray_color(r: &Ray, world: &dyn Hittable, depth: i32) -> Color {
     }
 
     if world.hit(r, 0.001, INFINITY, &mut rec) {
-        let mut scattered = Ray::ray(Vec3::default(), Vec3::default());
+        let mut scattered = Ray::ray(Vec3::default(), Vec3::default(), 0.0);
         let mut attenuation = Color::default();
         if rec
             .mat_ptr
@@ -60,7 +62,16 @@ fn random_scene() -> HittableList {
                 if choose_mat < 0.8 {
                     let albedo = Color::rand_vec3_01() * Color::rand_vec3_01();
                     let sphere_material = Arc::new(Lambertian::new(albedo));
-                    world.add(Arc::new(Sphere::new(center, 0.2, sphere_material)));
+                    let center2 = center + Vec3::default().set_y(rand_double(0.0, 0.5));
+
+                    world.add(Arc::new(MovingSphere::new(
+                        center,
+                        center2,
+                        0.0,
+                        1.0,
+                        0.2,
+                        sphere_material,
+                    )));
                 } else if choose_mat < 0.95 {
                     let albedo = Color::rand_vec3(0.5, 1.0);
                     let fuzz = rand_double(0.0, 0.5);
@@ -100,10 +111,10 @@ fn random_scene() -> HittableList {
 
 fn main() {
     //Image
-    let aspect_ratio = 3.0 / 2.0;
-    let image_width = 1200;
+    let aspect_ratio = 16.0 / 9.0;
+    let image_width = 400;
     let image_height = (image_width as f64 / aspect_ratio) as i32;
-    let samples_per_pixel = 500;
+    let samples_per_pixel = 100;
     let max_depth = 50;
 
     // World
@@ -154,7 +165,8 @@ fn main() {
         aspect_ratio,
         aperture,
         disk_to_focus,
-    );
+    )
+    .set_time(0.0, 1.0);
     //Render
     println!("P3\n{} {}\n255\n", image_width, image_height);
     for j in 0..(image_height - 1) {

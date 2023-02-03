@@ -1,13 +1,20 @@
+use std::time;
+
 use crate::vec3::*;
 #[derive(Debug, Copy, Clone)]
 pub struct Ray {
     origin: Point3,
     direction: Vec3,
+    time: f64,
 }
 
 impl Ray {
-    pub fn ray(origin: Point3, direction: Vec3) -> Self {
-        Ray { origin, direction }
+    pub fn ray(origin: Point3, direction: Vec3, time: f64) -> Self {
+        Ray {
+            origin,
+            direction,
+            time,
+        }
     }
 
     pub fn origin(&self) -> &Point3 {
@@ -20,5 +27,9 @@ impl Ray {
 
     pub fn at(&self, t: f64) -> Vec3 {
         self.origin + self.direction * t
+    }
+
+    pub fn time(&self) -> f64 {
+        self.time
     }
 }
