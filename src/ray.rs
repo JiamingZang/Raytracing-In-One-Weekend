@@ -1,5 +1,3 @@
-use std::time;
-
 use crate::vec3::*;
 #[derive(Debug, Copy, Clone)]
 pub struct Ray {

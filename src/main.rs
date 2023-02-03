@@ -173,7 +173,7 @@ fn main() {
         let j = image_height - j;
         eprintln!("\rScanlines remaining: {} ", j);
         for i in 0..image_width {
-            let mut pixel_color = Color::default();
+            let pixel_color;
             pixel_color = (0..samples_per_pixel)
                 .into_par_iter()
                 .map(|_| {

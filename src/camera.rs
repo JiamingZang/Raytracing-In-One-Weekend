@@ -1,5 +1,3 @@
-use std::mem;
-
 use crate::ray::Ray;
 use crate::rtweekend::*;
 use crate::vec3::*;
