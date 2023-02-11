@@ -1,9 +1,10 @@
 use std::sync::Arc;
 
 use crate::{
+    aabb::*,
     hittable::Hittable,
     material::Material,
-    vec3::{dot, Point3},
+    vec3::{dot, Point3, Vec3},
 };
 
 pub struct MovingSphere {
@@ -72,6 +73,20 @@ impl Hittable for MovingSphere {
         let outward_normal = (rec.p - self.center(r.time())) / self.radius;
         rec.set_face_normal(r, &outward_normal);
         rec.mat_ptr = self.mat_ptr.clone();
+        true
+    }
+
+    fn bounding_box(&self, time0: f64, time1: f64, output_box: &mut crate::aabb::AABB) -> bool {
+        let box0 = AABB::new(
+            self.center(time0) - Vec3::new(self.radius, self.radius, self.radius),
+            self.center(time0) + Vec3::new(self.radius, self.radius, self.radius),
+        );
+
+        let box1 = AABB::new(
+            self.center(time1) - Vec3::new(self.radius, self.radius, self.radius),
+            self.center(time1) + Vec3::new(self.radius, self.radius, self.radius),
+        );
+        *output_box = surrounding_box(box0, box1);
         true
     }
 }

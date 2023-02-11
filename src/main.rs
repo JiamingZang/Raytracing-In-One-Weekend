@@ -1,14 +1,16 @@
+mod aabb;
+mod bvh;
 mod camera;
 mod hittable;
 mod hittable_list;
+mod material;
+mod moving_sphere;
 mod ray;
 mod rtweekend;
 mod sphere;
 mod vec3;
-use std::sync::Arc;
-mod material;
-mod moving_sphere;
 
+use bvh::*;
 use camera::*;
 use hittable::*;
 use hittable_list::*;
@@ -17,11 +19,12 @@ use ray::*;
 use rayon::prelude::{IntoParallelIterator, ParallelIterator};
 use rtweekend::*;
 use sphere::*;
+use std::sync::Arc;
 use vec3::*;
 
 use crate::material::{Dielectric, Lambertian, Metal};
 
-fn ray_color(r: &Ray, world: &dyn Hittable, depth: i32) -> Color {
+fn ray_color(r: &Ray, world: Arc<dyn Hittable + Send + Sync>, depth: i32) -> Color {
     let mut rec = HitRecord::default();
 
     if depth <= 0 {
@@ -44,7 +47,7 @@ fn ray_color(r: &Ray, world: &dyn Hittable, depth: i32) -> Color {
     Color::new(1.0, 1.0, 1.0) * (1.0 - t) + Color::new(0.5, 0.7, 1.0) * t
 }
 
-fn random_scene() -> HittableList {
+fn random_scene() -> Arc<dyn Hittable + Send + Sync> {
     let mut world = HittableList::default();
     let ground_material = Arc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
     world.add(Arc::new(Sphere::new(
@@ -106,7 +109,7 @@ fn random_scene() -> HittableList {
         )));
     }
 
-    world
+    Arc::new(BVHNode::new(&world, 0.0, 1.0))
 }
 
 fn main() {
@@ -180,7 +183,7 @@ fn main() {
                     let u = (i as f64 + rand_01()) / (image_width as f64 - 1.0);
                     let v = (j as f64 + rand_01()) / (image_height as f64 - 1.0);
                     let r = cam.get_ray(u, v);
-                    ray_color(&r, &world, max_depth)
+                    ray_color(&r, world.clone(), max_depth)
                 })
                 .collect::<Vec<Color>>()
                 .iter()

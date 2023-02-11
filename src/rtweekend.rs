@@ -17,6 +17,11 @@ pub fn rand_double(min: f64, max: f64) -> f64 {
     rng.gen_range(min..max)
 }
 
+pub fn rand_int(min: i32, max: i32) -> i32 {
+    let mut rng = rand::thread_rng();
+    rng.gen_range(min..=max)
+}
+
 pub fn clamp(x: f64, min: f64, max: f64) -> f64 {
     if x < min {
         min
