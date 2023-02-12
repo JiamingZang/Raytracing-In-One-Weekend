@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use crate::aabb::AABB;
+use crate::aabb::Aabb;
 use crate::hittable::*;
 use crate::material::Material;
 use crate::ray::Ray;
@@ -18,7 +18,7 @@ impl Sphere {
         Sphere {
             center: cen,
             radius: r,
-            mat_ptr: mat_ptr,
+            mat_ptr,
         }
     }
 }
@@ -52,8 +52,8 @@ impl Hittable for Sphere {
         true
     }
 
-    fn bounding_box(&self, _time0: f64, _time11: f64, output_box: &mut crate::aabb::AABB) -> bool {
-        *output_box = AABB::new(
+    fn bounding_box(&self, _time0: f64, _time11: f64, output_box: &mut crate::aabb::Aabb) -> bool {
+        *output_box = Aabb::new(
             self.center - Vec3::new(self.radius, self.radius, self.radius),
             self.center + Vec3::new(self.radius, self.radius, self.radius),
         );

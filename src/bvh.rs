@@ -1,7 +1,7 @@
 use std::{cmp::Ordering, sync::Arc};
 
 use crate::{
-    aabb::{surrounding_box, AABB},
+    aabb::{surrounding_box, Aabb},
     hittable::Hittable,
     hittable_list::HittableList,
     rtweekend::rand_int,
@@ -12,7 +12,7 @@ use crate::{
 pub struct BVHNode {
     left: Arc<dyn Hittable + Send + Sync>,
     right: Arc<dyn Hittable + Send + Sync>,
-    r#box: AABB,
+    r#box: Aabb,
 }
 
 impl BVHNode {
@@ -20,7 +20,7 @@ impl BVHNode {
         let result = BVHNode {
             left: list.objects[0].clone(),
             right: list.objects[0].clone(),
-            r#box: AABB {
+            r#box: Aabb {
                 minimum: Vec3::default(),
                 maximum: Vec3::default(),
             },
@@ -69,14 +69,17 @@ impl BVHNode {
             },
             _ => {
                 let mut tempvec = vec![];
-                for i in start..end {
-                    tempvec.push(objects[i].clone());
+                // for i in start..end {
+                //     tempvec.push(objects[i].clone());
+                // }
+                for i in objects.iter().take(end).skip(start) {
+                    tempvec.push(i.clone());
                 }
                 tempvec.sort_by(|a, b| comparator(a.clone(), b.clone()));
-                for i in start..end {
-                    objects[i] = tempvec[i - start].clone();
-                }
-
+                // for i in start..end {
+                //     objects[i] = tempvec[i - start].clone();
+                // }
+                objects[start..end].clone_from_slice(&tempvec[..(end - start)]);
                 let mid = start + object_pan / 2;
                 node.left = Arc::new(BVHNode::bvh_node(
                     node.clone(),
@@ -85,8 +88,7 @@ impl BVHNode {
                     mid,
                     time0,
                     time1,
-                ))
-                .clone();
+                ));
                 node.right = Arc::new(BVHNode::bvh_node(
                     node.clone(),
                     objects.clone(),
@@ -98,8 +100,8 @@ impl BVHNode {
             }
         }
 
-        let mut box_left = AABB::new(Vec3::default(), Vec3::default());
-        let mut box_right = AABB::new(Vec3::default(), Vec3::default());
+        let mut box_left = Aabb::new(Vec3::default(), Vec3::default());
+        let mut box_right = Aabb::new(Vec3::default(), Vec3::default());
         if !node.left.bounding_box(time0, time1, &mut box_left)
             || !node.right.bounding_box(time0, time1, &mut box_right)
         {
@@ -114,8 +116,8 @@ impl BVHNode {
         b: Arc<dyn Hittable + Send + Sync>,
         axis: i32,
     ) -> Ordering {
-        let mut box_a = AABB::new(Vec3::default(), Vec3::default());
-        let mut box_b = AABB::new(Vec3::default(), Vec3::default());
+        let mut box_a = Aabb::new(Vec3::default(), Vec3::default());
+        let mut box_b = Aabb::new(Vec3::default(), Vec3::default());
         if !a.bounding_box(0.0, 0.0, &mut box_a) || !b.bounding_box(0.0, 0.0, &mut box_b) {
             eprintln!("No bounding box in bvh_node constructor.");
         };
@@ -163,9 +165,9 @@ impl Hittable for BVHNode {
         let hit_right = self
             .right
             .hit(r, t_min, if hit_left { rec.t } else { t_max }, rec);
-        return hit_right || hit_left;
+        hit_right || hit_left
     }
-    fn bounding_box(&self, _time0: f64, _time1: f64, output_box: &mut AABB) -> bool {
+    fn bounding_box(&self, _time0: f64, _time1: f64, output_box: &mut Aabb) -> bool {
         *output_box = self.r#box;
         true
     }

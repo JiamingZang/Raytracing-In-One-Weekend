@@ -2,16 +2,9 @@ use std::{mem, sync::Arc};
 
 use crate::{aabb::*, hittable::*, vec3::Point3};
 
+#[derive(Default)]
 pub struct HittableList {
     pub objects: Vec<Arc<dyn Hittable + Sync + Send>>,
-}
-
-impl Default for HittableList {
-    fn default() -> Self {
-        HittableList {
-            objects: Vec::new(),
-        }
-    }
 }
 
 impl HittableList {
@@ -22,7 +15,7 @@ impl HittableList {
     }
 
     pub fn add(&mut self, object: Arc<dyn Hittable + Sync + Send>) {
-        self.objects.push(object.into());
+        self.objects.push(object);
     }
 
     pub fn clear(&mut self) {
@@ -51,12 +44,12 @@ impl Hittable for HittableList {
         hit_anything
     }
 
-    fn bounding_box(&self, time0: f64, time1: f64, output_box: &mut crate::aabb::AABB) -> bool {
+    fn bounding_box(&self, time0: f64, time1: f64, output_box: &mut crate::aabb::Aabb) -> bool {
         if self.objects.is_empty() {
             return false;
         }
 
-        let mut temp_box = AABB::new(Point3::default(), Point3::default());
+        let mut temp_box = Aabb::new(Point3::default(), Point3::default());
         let mut first_box = true;
 
         for object in self.objects.clone() {
@@ -66,7 +59,7 @@ impl Hittable for HittableList {
             *output_box = if first_box {
                 temp_box
             } else {
-                surrounding_box(output_box.clone(), temp_box)
+                surrounding_box(*output_box, temp_box)
             };
             first_box = false;
         }

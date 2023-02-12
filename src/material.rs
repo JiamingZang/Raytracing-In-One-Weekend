@@ -40,8 +40,8 @@ impl Material for Lambertian {
             scatter_direction = rec.normal;
         }
 
-        *scattered = Ray::ray(rec.p, scatter_direction, r_in.time());
-        *attenuation = self.albedo.clone();
+        *scattered = Ray::new(rec.p, scatter_direction, r_in.time());
+        *attenuation = self.albedo;
         true
     }
 }
@@ -54,7 +54,7 @@ pub struct Metal {
 impl Metal {
     pub fn new(albedo: Color, f: f64) -> Metal {
         Metal {
-            albedo: albedo,
+            albedo,
             fuzz: {
                 if f < 1.0 {
                     f
@@ -75,7 +75,7 @@ impl Material for Metal {
         scattered: &mut Ray,
     ) -> bool {
         let reflected = reflect(r_in.direction().unit_vector(), rec.normal);
-        *scattered = Ray::ray(
+        *scattered = Ray::new(
             rec.p,
             reflected + random_in_unit_sphere() * self.fuzz,
             r_in.time(),
@@ -122,18 +122,13 @@ impl Material for Dielectric {
 
         let cannot_reflect = refraction_ratio * sin_theta > 1.0;
 
-        let direction;
-        if cannot_reflect || reflectance(cos_theta, refraction_ratio) > rand_01() {
-            direction = reflect(unit_direction, rec.normal);
+        let direction = if cannot_reflect || reflectance(cos_theta, refraction_ratio) > rand_01() {
+            reflect(unit_direction, rec.normal)
         } else {
-            direction = refract(unit_direction, rec.normal, refraction_ratio);
-        }
-
+            refract(unit_direction, rec.normal, refraction_ratio)
+        };
         *attenuation = Color::new(1.0, 1.0, 1.0);
-        if rec.front_face {
-        } else {
-        }
-        *scattered = Ray::ray(rec.p, direction, r_in.time());
+        *scattered = Ray::new(rec.p, direction, r_in.time());
         true
     }
 }

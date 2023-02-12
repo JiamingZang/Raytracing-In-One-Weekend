@@ -23,11 +23,5 @@ pub fn rand_int(min: i32, max: i32) -> i32 {
 }
 
 pub fn clamp(x: f64, min: f64, max: f64) -> f64 {
-    if x < min {
-        min
-    } else if x > max {
-        max
-    } else {
-        x
-    }
+    x.clamp(min, max)
 }

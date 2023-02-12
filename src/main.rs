@@ -32,7 +32,7 @@ fn ray_color(r: &Ray, world: Arc<dyn Hittable + Send + Sync>, depth: i32) -> Col
     }
 
     if world.hit(r, 0.001, INFINITY, &mut rec) {
-        let mut scattered = Ray::ray(Vec3::default(), Vec3::default(), 0.0);
+        let mut scattered = Ray::new(Vec3::default(), Vec3::default(), 0.0);
         let mut attenuation = Color::default();
         if rec
             .mat_ptr
@@ -176,8 +176,7 @@ fn main() {
         let j = image_height - j;
         eprintln!("\rScanlines remaining: {} ", j);
         for i in 0..image_width {
-            let pixel_color;
-            pixel_color = (0..samples_per_pixel)
+            let pixel_color = (0..samples_per_pixel)
                 .into_par_iter()
                 .map(|_| {
                     let u = (i as f64 + rand_01()) / (image_width as f64 - 1.0);

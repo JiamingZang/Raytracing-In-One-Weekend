@@ -3,14 +3,14 @@ use std::mem::swap;
 use crate::{ray::Ray, vec3::Point3};
 
 #[derive(Debug, Clone, Copy)]
-pub struct AABB {
+pub struct Aabb {
     pub minimum: Point3,
     pub maximum: Point3,
 }
 
-impl AABB {
-    pub fn new(minimum: Point3, maximum: Point3) -> AABB {
-        AABB { minimum, maximum }
+impl Aabb {
+    pub fn new(minimum: Point3, maximum: Point3) -> Aabb {
+        Aabb { minimum, maximum }
     }
 
     // pub fn hit(&self, r: &Ray, mut t_min: f64, mut t_max: f64) -> bool {
@@ -50,7 +50,7 @@ impl AABB {
     }
 }
 
-pub fn surrounding_box(box0: AABB, box1: AABB) -> AABB {
+pub fn surrounding_box(box0: Aabb, box1: Aabb) -> Aabb {
     let small = Point3::new(
         f64::min(box0.minimum.x, box1.minimum.x),
         f64::min(box0.minimum.y, box1.minimum.y),
@@ -63,7 +63,7 @@ pub fn surrounding_box(box0: AABB, box1: AABB) -> AABB {
         f64::max(box0.maximum.z, box1.maximum.z),
     );
 
-    AABB {
+    Aabb {
         minimum: small,
         maximum: big,
     }

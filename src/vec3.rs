@@ -253,6 +253,7 @@ pub fn refract(uv: Vec3, n: Vec3, etai_over_etat: f64) -> Vec3 {
     let r_out_parallel = -n * (1.0 - r_out_perp.length_squared()).sqrt();
     r_out_perp + r_out_parallel
 }
+
 fn fmin(a: f64, b: f64) -> f64 {
     if a > b {
         b
