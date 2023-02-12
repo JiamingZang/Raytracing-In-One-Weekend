@@ -165,7 +165,7 @@ impl Hittable for BVHNode {
             .hit(r, t_min, if hit_left { rec.t } else { t_max }, rec);
         return hit_right || hit_left;
     }
-    fn bounding_box(&self, time0: f64, time1: f64, output_box: &mut AABB) -> bool {
+    fn bounding_box(&self, _time0: f64, _time1: f64, output_box: &mut AABB) -> bool {
         *output_box = self.r#box;
         true
     }
