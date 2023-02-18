@@ -14,6 +14,7 @@ use bvh::*;
 use camera::*;
 use hittable::*;
 use hittable_list::*;
+use image::{ImageBuffer, Rgb, RgbImage};
 use moving_sphere::MovingSphere;
 use ray::*;
 use rayon::prelude::{IntoParallelIterator, ParallelIterator};
@@ -171,6 +172,7 @@ fn main() {
     )
     .set_time(0.0, 1.0);
     //Render
+    let mut img = RgbImage::new(image_width as u32, image_height as u32);
     println!("P3\n{} {}\n255\n", image_width, image_height);
     for j in 0..(image_height - 1) {
         let j = image_height - j;
@@ -193,8 +195,60 @@ fn main() {
             //     let r = cam.get_ray(u, v);
             //     pixel_color += ray_color(&r, &world, max_depth);
             // }
-            write_color(pixel_color, samples_per_pixel);
+            // write_color(pixel_color, samples_per_pixel);
+            write_to_png(
+                &mut img,
+                i as u32,
+                (image_height - j + 1) as u32,
+                pixel_color,
+                samples_per_pixel,
+            );
         }
     }
+    img.save("test.png").unwrap();
     eprintln!("\nDone.\n");
+}
+
+pub fn write_to_png(
+    img: &mut ImageBuffer<Rgb<u8>, Vec<u8>>,
+    x: u32,
+    y: u32,
+    pixel_color: Color,
+    samples_per_pixel: usize,
+) {
+    let mut r = pixel_color.x;
+    let mut g = pixel_color.y;
+    let mut b = pixel_color.z;
+    // Divide the color by the number of pixels
+    let scale = 1.0 / samples_per_pixel as f64;
+    // gamma-correct for gamma =2.0
+    r = (scale * r).sqrt();
+    g = (scale * g).sqrt();
+    b = (scale * b).sqrt();
+
+    // write the translated [0,255] value of each color component
+    let ir = (256.0 * clamp(r, 0.0, 0.999)) as u8;
+    let ig = (256.0 * clamp(g, 0.0, 0.999)) as u8;
+    let ib = (256.0 * clamp(b, 0.0, 0.999)) as u8;
+
+    img.put_pixel(x, y, Rgb([ir, ig, ib]));
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn test() {
+        use image::{Rgb, RgbImage};
+
+        let mut img = RgbImage::new(32, 32);
+
+        for x in 0..=32 {
+            for y in 8..24 {
+                img.put_pixel(x, y, Rgb([255, 0, 0]));
+                img.put_pixel(y, x, Rgb([255, 0, 0]));
+            }
+        }
+
+        img.save("test.png").unwrap();
+    }
 }
