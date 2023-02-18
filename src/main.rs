@@ -190,7 +190,7 @@ fn main() {
                 .iter()
                 .fold(Color::default(), |a: Color, b: &Color| a + *b);
 
-            write_to_png(
+            write_color_to_png(
                 &mut img,
                 i as u32,
                 (image_height - j) as u32,
@@ -203,7 +203,7 @@ fn main() {
     eprintln!("\nDone.\n");
 }
 
-pub fn write_to_png(
+pub fn write_color_to_png(
     img: &mut ImageBuffer<Rgb<u8>, Vec<u8>>,
     x: u32,
     y: u32,

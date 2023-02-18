@@ -187,24 +187,24 @@ pub fn cross(u: &Vec3, v: &Vec3) -> Vec3 {
 pub type Point3 = Vec3;
 pub type Color = Vec3;
 
-pub fn write_color(pixel_color: Color, samples_per_pixel: usize) {
-    let mut r = pixel_color.x;
-    let mut g = pixel_color.y;
-    let mut b = pixel_color.z;
+// pub fn write_color(pixel_color: Color, samples_per_pixel: usize) {
+//     let mut r = pixel_color.x;
+//     let mut g = pixel_color.y;
+//     let mut b = pixel_color.z;
 
-    // Divide the color by the number of pixels
-    let scale = 1.0 / samples_per_pixel as f64;
-    // gamma-correct for gamma =2.0
-    r = (scale * r).sqrt();
-    g = (scale * g).sqrt();
-    b = (scale * b).sqrt();
+//     // Divide the color by the number of pixels
+//     let scale = 1.0 / samples_per_pixel as f64;
+//     // gamma-correct for gamma =2.0
+//     r = (scale * r).sqrt();
+//     g = (scale * g).sqrt();
+//     b = (scale * b).sqrt();
 
-    // write the translated [0,255] value of each color component
-    let ir = (256.0 * clamp(r, 0.0, 0.999)) as i32;
-    let ig = (256.0 * clamp(g, 0.0, 0.999)) as i32;
-    let ib = (256.0 * clamp(b, 0.0, 0.999)) as i32;
-    println!("{} {} {}", ir, ig, ib);
-}
+//     // write the translated [0,255] value of each color component
+//     let ir = (256.0 * clamp(r, 0.0, 0.999)) as i32;
+//     let ig = (256.0 * clamp(g, 0.0, 0.999)) as i32;
+//     let ib = (256.0 * clamp(b, 0.0, 0.999)) as i32;
+//     println!("{} {} {}", ir, ig, ib);
+// }
 
 pub fn random_in_unit_sphere() -> Vec3 {
     loop {
