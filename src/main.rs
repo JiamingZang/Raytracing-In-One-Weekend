@@ -189,13 +189,7 @@ fn main() {
                 .collect::<Vec<Color>>()
                 .iter()
                 .fold(Color::default(), |a: Color, b: &Color| a + *b);
-            // for _ in 0..samples_per_pixel {
-            //     let u = (i as f64 + rand_01()) / (image_width as f64 - 1.0);
-            //     let v = (j as f64 + rand_01()) / (image_height as f64 - 1.0);
-            //     let r = cam.get_ray(u, v);
-            //     pixel_color += ray_color(&r, &world, max_depth);
-            // }
-            // write_color(pixel_color, samples_per_pixel);
+
             write_to_png(
                 &mut img,
                 i as u32,
@@ -232,23 +226,4 @@ pub fn write_to_png(
     let ib = (256.0 * clamp(b, 0.0, 0.999)) as u8;
 
     img.put_pixel(x, y, Rgb([ir, ig, ib]));
-}
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn test() {
-        use image::{Rgb, RgbImage};
-
-        let mut img = RgbImage::new(32, 32);
-
-        for x in 0..=32 {
-            for y in 8..24 {
-                img.put_pixel(x, y, Rgb([255, 0, 0]));
-                img.put_pixel(y, x, Rgb([255, 0, 0]));
-            }
-        }
-
-        img.save("test.png").unwrap();
-    }
 }
