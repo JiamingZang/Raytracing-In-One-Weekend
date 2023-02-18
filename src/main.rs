@@ -174,7 +174,7 @@ fn main() {
     //Render
     let mut img = RgbImage::new(image_width as u32, image_height as u32);
     println!("P3\n{} {}\n255\n", image_width, image_height);
-    for j in 0..(image_height - 1) {
+    for j in 0..image_height {
         let j = image_height - j;
         eprintln!("\rScanlines remaining: {} ", j);
         for i in 0..image_width {
@@ -199,7 +199,7 @@ fn main() {
             write_to_png(
                 &mut img,
                 i as u32,
-                (image_height - j + 1) as u32,
+                (image_height - j) as u32,
                 pixel_color,
                 samples_per_pixel,
             );
