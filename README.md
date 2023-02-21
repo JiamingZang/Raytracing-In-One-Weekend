@@ -5,7 +5,7 @@ A rust version of Ray Tracing In One Weekend from
 https://raytracing.github.io/
 
 ```
-$ cargo run --release > image.ppm
+$ cargo run --release
 ```
 
 1.26-2.2
